@@ -1,18 +1,23 @@
 # Spam Classifier
 
+### Travailler en local (avant déploiement) :
 
-
-travailler en local (avant déploiement) :
+Activer l'environnement virtuel
 ```bash
-
 source mon_env/bin/activate
-
-pip install -r requirements.txt
-
-fastapi dev main.py
 ```
 
-sur mac au moment de build l'image
+Installer les dépendances
+```bash
+pip install -r requirements.txt
+```
+
+Lancer l'application
+```bash
+fastapi dev app.py
+```
+
+### Sur mac au moment de build l'image
 ```bash
 docker build -t grpccidaacr.azurecr.io/NOMDELIMAGE -platform=linux/amd64
 ```

@@ -4,3 +4,7 @@ scikit-learn
 joblib
 fastapi[standard]
 jinja2
+python-multipart
+typing
+passlib
+bcrypt

@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}"">
     <title>Spam Classifier</title>
 </head>
 <body>
+    <nav>
+        <nav>
+            {% if username %}
+                    <p>Bienvenue, {{ username }} !</p>
+                    <a href="/deconnexion">Se déconnecter</a>
+                {% else %}
+                    <a href="/static/connexion.html">Se connecter</a>
+                    <a href="/static/inscription.html">M'inscrire</a>
+                {% endif %}
+        </nav>
+    </nav>
     <h1>Spam Classifier</h1>
     <form id="messageForm">
         <h2>Please enter a message to test if it's a spam or not :</h2>
@@ -37,6 +48,54 @@
             .catch(error => {
                 document.getElementById('result').textContent = 'Error during the submit of the message.';
             });
+        });
+
+        document.getElementById('messageForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const message = document.getElementById('message').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = `Result: ${data.prediction}`;
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Error during the submit of the message.';
+            });
+        });
+
+        document.getElementById('logout').addEventListener('click', function(event) {
+        event.preventDefault(); // Empêche le comportement par défaut du lien
+
+        // Supprimer un cookie (si utilisé pour la session)
+        document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        // Supprimer les données du localStorage ou du sessionStorage
+        localStorage.removeItem('session_token');
+        sessionStorage.removeItem('session_token');
+
+        // Rediriger vers la page de connexion ou d'accueil
+        window.location.href = "/";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Vérifiez l'état de connexion (par exemple via un cookie ou localStorage)
+        const isLoggedIn = document.cookie.includes('session_token') || localStorage.getItem('session_token');
+
+        if (isLoggedIn) {
+            document.querySelector('.connected').style.display = 'block';
+            document.querySelector('.disconnected').style.display = 'none';
+        } else {
+            document.querySelector('.connected').style.display = 'none';
+            document.querySelector('.disconnected').style.display = 'block';
+        }
         });
     </script>
 </body>
